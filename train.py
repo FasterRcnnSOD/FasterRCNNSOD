@@ -154,6 +154,6 @@ if __name__ == "__main__":
             set_optimizer_lr(optimizer, lr_scheduler_func, epoch)
 
             fit_one_epoch(model, train_util, loss_history, eval_callback, optimizer, epoch, epoch_step, epoch_step_val,
-                          gen, gen_val, UnFreeze_Epoch, Cuda, fp16, scaler, save_period, save_dir)
+                          gen, gen_val, UnFreeze_Epoch, Cuda, fp16, scaler, save_period)
 
         loss_history.writer.close()
