@@ -13,7 +13,7 @@ from PIL import Image
 from torch.utils.tensorboard import SummaryWriter
 from tqdm import tqdm
 
-from .utils import cvtColor, resize_image, preprocess_input, get_new_img_size
+from .utils import cvtColor, resize_image, preprocess_input
 from .utils_bbox import DecodeBox
 from .utils_map import get_coco_map, get_map
 
@@ -111,10 +111,9 @@ class EvalCallback():
     def get_map_txt(self, image_id, image, class_names, map_out_path):
         f = open(os.path.join(map_out_path, "detection-results/" + image_id + ".txt"), "w")
         image_shape = np.array(np.shape(image)[0:2])
-        input_shape = get_new_img_size(image_shape[0], image_shape[1])
         image = cvtColor(image)
 
-        image_data = resize_image(image, [input_shape[1], input_shape[0]])
+        image_data = resize_image(image, [self.input_shape[1], self.input_shape[0]])
         image_data = np.expand_dims(np.transpose(preprocess_input(np.array(image_data, dtype='float32')), (2, 0, 1)), 0)
 
         with torch.no_grad():
@@ -123,7 +122,7 @@ class EvalCallback():
                 images = images.cuda()
 
             roi_cls_locs, roi_scores, rois, _ = self.net(images)
-            results = self.bbox_util.forward(roi_cls_locs, roi_scores, rois, image_shape, input_shape,
+            results = self.bbox_util.forward(roi_cls_locs, roi_scores, rois, image_shape, self.input_shape,
                                              nms_iou=self.nms_iou, confidence=self.confidence)
             if len(results[0]) <= 0:
                 return
