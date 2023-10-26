@@ -3,8 +3,8 @@ import numpy as np
 import torch
 from PIL import Image
 from torch.utils.data.dataset import Dataset
-
-from utils.utils import cvtColor, preprocess_input
+import pickle
+from utils.utils import preprocess_input
 
 
 class FRCNNDataset(Dataset):
@@ -34,8 +34,13 @@ class FRCNNDataset(Dataset):
 
     def get_random_data(self, annotation_line, input_shape, jitter=.3, hue=.1, sat=0.7, val=0.4, random=True):
         line = annotation_line.split()
-        image = Image.open(line[0])
-        image = cvtColor(image)
+        # image = Image.open(line[0])
+        # image = cvtColor(image)
+        img_type = line[0][-4:]
+        npy_path = line[0].replace(img_type, '.pkl')
+        with open(npy_path, 'rb') as f:
+            image = pickle.load(f)
+
         iw, ih = image.size
         h, w = input_shape
         box = np.array([np.array(list(map(int, box.split(',')))) for box in line[1:]])
