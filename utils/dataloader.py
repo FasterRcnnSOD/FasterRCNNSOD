@@ -61,7 +61,7 @@ class FRCNNDataset(Dataset):
                 box[:, 3][box[:, 3] > h] = h
                 box_w = box[:, 2] - box[:, 0]
                 box_h = box[:, 3] - box[:, 1]
-            box = box[np.logical_and(box_w > 1, box_h > 1)]
+                box = box[np.logical_and(box_w > 1, box_h > 1)]
 
             return image_data, box
 
